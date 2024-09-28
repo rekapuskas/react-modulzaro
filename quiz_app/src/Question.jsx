@@ -1,16 +1,33 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useContext } from "react";
 import PointContext from "./PointContext";
-
+import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function Question({ currentQuestion, page }) {
   const { question, options, correctAnswer } = currentQuestion;
-  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const { points, setPoints } = useContext(PointContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   const handleAnswer = (e) => {
     e.preventDefault();
-    console.log(selectedAnswer);
-    if (selectedAnswer == correctAnswer) {
-      setPoints(points + 1);
+
+    if (selectedAnswer === null) {
+      alert("Choose an answer!");
+    } else {
+      searchParams.set("_page", page + 1);
+      setSearchParams(searchParams);
+      console.log(selectedAnswer);
+      if (selectedAnswer == correctAnswer) {
+        setPoints(points + 1);
+      }
+      setSelectedAnswer(null);
+      if (page >= 10) {
+        navigate("/results");
+        return;
+      }
     }
   };
 
@@ -35,11 +52,17 @@ export default function Question({ currentQuestion, page }) {
                   type="radio"
                   name="answer"
                   id={index}
+                  checked={selectedAnswer === option}
                 />
                 <br />
               </div>
             );
           })}
+
+          <input
+            type="submit"
+            value={page == 10 ? "Result" : "Next question"}
+          />
         </form>
       </div>
     </div>
