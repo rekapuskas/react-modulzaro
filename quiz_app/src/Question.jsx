@@ -36,17 +36,28 @@ export default function Question({ currentQuestion, page }) {
   };
   return (
     <div>
-      <div>{`Question ${page}/10`}</div>
+
+      <div className="progress">
+        <div className="progress-bar " style={{width: `${page*10}%`}}>{`${page}/10`}</div>
+      </div>
       <div>{question}</div>
       <div>
         <form onSubmit={handleAnswer} action="">
           {options.map((option, index) => {
             return (
-              <div key={index}>
-                <label htmlFor={index}>{option}</label>
+              <div
+                key={index}
+                className="list-group"
+              >
+                <label
+                  className={`list-group-item list-group-item-action `}
+                  htmlFor={index}
+                >
+                  {option}
+                </label>
                 <input
                   onChange={handleChange}
-                  className="btn-check"
+                  className=" btn-check"
                   key={index}
                   value={option}
                   type="radio"
@@ -62,6 +73,7 @@ export default function Question({ currentQuestion, page }) {
           <input
             type="submit"
             value={page == 10 ? "Result" : "Next question"}
+            className="btn btn-primary"
           />
         </form>
       </div>
